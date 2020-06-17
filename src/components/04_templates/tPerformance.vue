@@ -83,19 +83,18 @@ export default Vue.extend({
         // Save performance measurements
         saveMeasurement(measurements) {
             const storage = require('electron-json-storage');
-            for (let i = 0, l = measurements.length; i < l; i++) {
-                const key = `${(measurements[i].name).replace(/\s/g, '')}`
-                    + `_${new Date().toLocaleDateString()}_${new Date().toLocaleTimeString()}`;
-                storage.set(key, measurements[i], (error) => {
-                    if (error) throw error;
-                });
-            }
 
-            storage.getAll( (error, data) => {
-                if (error) throw error;
-                const dataPath = storage.getDataPath();
-                this.savedLocationPath = `Saved to: ${dataPath}`;
-            });
+            // Generate file name from names of measurement elements and add current date / time (to make it more individual)
+            const key = measurements.reduce((acc, curr) => acc + curr.name + '_', '' ).toLowerCase().replace(/\s|:/g, '') + `_${getCurrentDate()}`;
+
+            // Convert measurements into one data obj with each measurement element name as key
+            const data = measurements.reduce((obj, item) => (obj[item.name] = item, obj) , {});
+
+            // Save file
+            storage.set(key, data, (error) => { if (error) throw error; });
+
+            // Return full file path to user
+            this.savedLocationPath = `Saved to: ${storage.getDataPath()}/${key}`;
         },
 
         // Save annotated TD to electron storage
