@@ -66,7 +66,6 @@ export default Vue.extend({
       'getSidebarActive'
     ]),
     getSidebarStyle() {
-      console.log('route ', (this as any).$route.params.id);
       return (this as any).$route.params.id === undefined && !(this as any).getSidebarActive ? 'sidebar full-width' : (this as any).getSidebarActive ? 'sidebar sidebar-visible' : 'sidebar';
     },
     getHeaderStyle() {
@@ -79,7 +78,6 @@ export default Vue.extend({
       this.$emit('home-clicked');
     },
     toggleSidebar() {
-      console.log('HEyho');
       this.isSidebarVisible = !this.isSidebarVisible;
       (this as any).setSidebarActiveStatus(this.isSidebarVisible);
     },
