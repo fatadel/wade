@@ -129,6 +129,10 @@ export default Vue.extend({
     overflow: scroll;
 }
 
+.output-body label {
+    word-break: break-all;
+}
+
 .output-button-container {
     height: 8%;
     padding-top: 7px;
