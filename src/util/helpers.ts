@@ -39,6 +39,7 @@ export const confidenceLevel = {
     NINETY_NINE_POINT_NINE_PERCENT: ['99.9%', 3.291]
 };
 
+// Returns current date and current time seperated with '-'
 export function getCurrentDate() {
     const date = new Date();
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}-${date.getHours()}h${date.getMinutes()}min${date.getSeconds()}sec`;
