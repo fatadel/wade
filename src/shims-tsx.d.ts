@@ -325,6 +325,7 @@ declare global {
       overallDuration?: number; // Overall measured duration
       overallIterations?: number; // Overall iteration executed
       measurementNum: number; // Number of measurement rounds
+      calculationData?: any; // Data needed for calculation of static timing
     }
 
     /**
@@ -365,12 +366,30 @@ declare global {
     interface PerformanceMeasurementSettings {
       settingsMeasurementType: MeasurementTypeEnum;
       settingsConfidenceLevel: number;
+      settingsStaticTiming: boolean;
       settingsIterations?: number;
       settingsDuration?: number;
       settingsDelayType: DelayTypeEnum;
       settingsDelayDuration?: number;
       settingsNumMeasurements: number;
       settingsNumClients?: number; // TODO: for later
+    }
+
+    /**
+     * Describes the results of static timing calculation
+     */
+    interface StaticTimingInterface {
+      possible: StaticTimingResults;
+      realistic: StaticTimingResults;
+    }
+
+    /**
+     * Realistic and possible results of static timing calculation
+     */
+    interface StaticTimingResults {
+      confMin: number;
+      confMax: number;
+      mean: number;
     }
   }
 }

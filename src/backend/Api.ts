@@ -109,6 +109,7 @@ export async function startPerformancePrediction(interactions: any, settings: WA
         interactions,
         settings.settingsMeasurementType,
         settings.settingsConfidenceLevel,
+        settings.settingsStaticTiming,
         settings.settingsDelayType,
         settings.settingsDelayDuration,
         settings.settingsIterations,

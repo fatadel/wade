@@ -268,12 +268,13 @@ export default Vue.extend({
             const settings: WADE.PerformanceMeasurementSettings = {
                 settingsMeasurementType: this.measurementType,
                 settingsConfidenceLevel: this.selectedConfLevel,
+                settingsStaticTiming: this.isStaticTimingSelected,
                 settingsIterations: this.iterations,
                 settingsDuration: this.duration,
                 settingsDelayType: this.typeOfDelay,
                 settingsDelayDuration: this.delayDuration,
                 settingsNumMeasurements: this.measurementNum,
-                settingsNumClients: 1 // TODO: for later
+                settingsNumClients: 1 // todo for later
             };
 
             this.$emit('start-measurement', settings);
