@@ -2,8 +2,6 @@ import { DelayTypeEnum, MeasurementTypeEnum, PossibleInteractionTypesEnum } from
 import { ConfLevel } from '../util/helpers';
 import SizeCalculator from '@/backend/SizeCalculator';
 
-// TODO: Refactor: remove duplicate code
-
 export default class PerformancePrediction {
     // Inputs determined by user
     private measurementType: MeasurementTypeEnum;
@@ -15,6 +13,8 @@ export default class PerformancePrediction {
     private delayBeforeEach: number;
     private measurementNum: number;
     private confidenceLevel: any;
+    private computeStaticTiming: boolean;
+    private confidenceFactor: number;
 
     // Input determined by TD
     private interactions: any;
@@ -23,6 +23,7 @@ export default class PerformancePrediction {
         interactions: any,
         measurementType: MeasurementTypeEnum,
         confidenceLevel: any,
+        staticTiming: boolean,
         delayType: WADE.DelayTypeEnum,
         delayDuration?: number,
         iterations?: number,
@@ -33,13 +34,15 @@ export default class PerformancePrediction {
         this.interactions = interactions;
         this.measurementType = measurementType;
         this.confidenceLevel = confidenceLevel;
+        this.computeStaticTiming = staticTiming;
         this.iterations = iterations || 0;
         this.duration = duration || 0;
-        this.numClients = numClients || 1; // TODO: not used right now, always 1
+        this.numClients = numClients || 1; // not used right now, always 1
         this.delayType = delayType;
         this.delayFirst = delayType === DelayTypeEnum.BEFORE_BEGIN && delayDuration ? delayDuration : 0;
         this.delayBeforeEach = delayType === DelayTypeEnum.BEFORE_EACH && delayDuration ? delayDuration : 0;
         this.measurementNum = measurementNum || 1;
+        this.confidenceFactor = ConfLevel.get(this.confidenceLevel) || 3.291;
     }
 
     // Get performance measurements for all interactions
@@ -48,6 +51,12 @@ export default class PerformancePrediction {
         this.interactions.forEach(async interaction => {
             results.push(await this.execute(interaction));
         });
+
+        if (this.computeStaticTiming) {
+            const staticTiming = this.calculateStaticTiming(await results);
+            console.log('STATIC TIMING: ', staticTiming);
+        }
+
         return await results;
     }
 
@@ -79,6 +88,18 @@ export default class PerformancePrediction {
             overallIterations: 0
         };
 
+        // Data needed for staticTiming calculation
+        const calculationData = {
+            possible: {
+                stDev: 0 as number | undefined,
+                dataSize: 0
+            },
+            realistic: {
+                stDev: 0 as number | undefined,
+                dataSize: 0
+            }
+        };
+
         // Measured execution-times
         let measuredExecutions: number[] = [];
 
@@ -94,10 +115,10 @@ export default class PerformancePrediction {
         // Check which kind of performance testing should be executed
         switch (this.measurementType) {
             case MeasurementTypeEnum.NUM_CLIENTS_NUM_RUN:
-                // TODO: not yet implemented
+                // not yet implemented
                 break;
             case MeasurementTypeEnum.NUM_CLIENTS_DURATION_RUN:
-                // TODO: not yet implemented
+                // not yet implemented
                 break;
             case MeasurementTypeEnum.NUM_RUNS:
             case MeasurementTypeEnum.DURATION_RUN:
@@ -131,10 +152,19 @@ export default class PerformancePrediction {
             mainResult.firstMeasured = mainResult.measuredExecutions[0];
             // Remove first execution to not include it in calculations
             measuredExecutions.shift();
-            // Get POSSIBLE WCET, BCET, AET
-            mainResult.possible = this.calculateExecutionTimes(measuredExecutions);
-            // Get REALISTIC WCET, BCET, AET (remove outliers)
-            mainResult.realistic = this.calculateExecutionTimes(this.findOutliers(measuredExecutions));
+
+            // Get POSSIBLE WCET, BCET, AET & calculation data
+            const possibleResults = this.calculateExecutionTimes(measuredExecutions);
+            mainResult.possible =  possibleResults.result;
+            calculationData.possible = possibleResults.calculationData;
+
+            // Get REALISTIC WCET, BCET, AET (remove outliers) & calculation data
+            const realisticResults = this.calculateExecutionTimes(this.findOutliers(measuredExecutions));
+            mainResult.realistic = realisticResults.result;
+            calculationData.realistic = realisticResults.calculationData;
+
+            // If static timing needs to be calculated, add calcData to main result
+            if (this.computeStaticTiming) mainResult.calculationData = calculationData;
 
             return mainResult;
     }
@@ -415,11 +445,17 @@ export default class PerformancePrediction {
     }
 
     private calculateExecutionTimes(executionTimes: number[]):
-    {       WCET: number,
-            BCET: number,
-            AET: number,
-            all: number[],
-            confidenceResults: any
+    {       result: {
+                WCET: number,
+                BCET: number,
+                AET: number,
+                all: number[],
+                confidenceResults: any,
+            },
+            calculationData: {
+                stDev: number | undefined,
+                dataSize: number
+            }
     } {
         const executions = [...executionTimes];
         const all = [...executions];
@@ -437,7 +473,7 @@ export default class PerformancePrediction {
 
         // Confidence interval variables
         let mean: number;
-        let stDev: number; // Standard deviation
+        let stDev: number | undefined; // Standard deviation
         let stErr: number; // Standard error
         let errMargin: number; // Error margin
         let confMin: number = 0; // Confidence interval min value
@@ -447,20 +483,26 @@ export default class PerformancePrediction {
             mean = [...executions].reduce((a, b) => a + b) / dataSize;
             stDev = Math.sqrt([...executions].map(x => Math.pow( x - mean, 2)).reduce((a, b) => a + b) / dataSize);
             stErr = stDev / Math.sqrt(dataSize);
-            const confLevel = ConfLevel.get(this.confidenceLevel) || 3.291;
-            errMargin = stErr * confLevel;
+            const confFactor = this.confidenceFactor;
+            errMargin = stErr * confFactor;
             confMin = mean - errMargin;
             confMax = mean + errMargin;
         }
 
         return {
-            WCET,
-            BCET,
-            AET,
-            all,
-            confidenceResults: {
-                confMin,
-                confMax
+            result: {
+                WCET,
+                BCET,
+                AET,
+                all,
+                confidenceResults: {
+                    confMin,
+                    confMax
+                }
+            },
+            calculationData: {
+                stDev,
+                dataSize
             }
         };
     }
@@ -500,6 +542,52 @@ export default class PerformancePrediction {
             }
         }
         return resultOutput;
+    }
+
+    /**
+     * Compute the static Timing for an action interaction
+     */
+    private calculateStaticTiming(measurements): WADE.StaticTimingInterface | null {
+        // Check if prerequisities to calculate static timing are fullfilled
+        if (measurements.length !== 2) return null;
+
+        // Initialize result
+        const staticTiming = {
+            realistic: {
+                confMin: 0,
+                confMax: 0,
+                mean: 0
+            },
+            possible: {
+                confMin: 0,
+                confMax: 0,
+                mean: 0
+            }
+        };
+
+        // Initialize action and property result
+        let actionResult;
+        let propertyResult;
+
+        // Zuweisung der Ergebnisse
+        measurements.forEach(element => {
+            if (element.type.include('property')) propertyResult = element;
+            if (element.type.include('action')) actionResult = element;
+        });
+
+        // Actually calculate static timing (possible & realistic)
+        Object.keys(staticTiming).forEach((typeOfMeasurement) => {
+            const mean = actionResult[typeOfMeasurement].AET - propertyResult[typeOfMeasurement].AET;
+
+            const z = this.confidenceFactor;
+            const partTwo = z * Math.sqrt((actionResult.calculationData[typeOfMeasurement].stDev / actionResult.calculationData[typeOfMeasurement].dataSize) + (propertyResult.calculationData[typeOfMeasurement].stDev / propertyResult.calculationData[typeOfMeasurement].dataSize));
+            const confMin = mean - partTwo;
+            const confMax = mean + partTwo;
+            staticTiming[typeOfMeasurement] = {confMin, confMax, mean};
+
+        });
+
+        return staticTiming;
     }
 
     private generateError() {
