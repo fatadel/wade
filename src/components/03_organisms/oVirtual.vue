@@ -7,15 +7,9 @@
         </div>
       </div>
       <div class="show-vconfig">
-        <aConfigStatusBar
-          class="vconfig-status"
-          :statusMessage="vconfigStatus"
-        ></aConfigStatusBar>
+        <aConfigStatusBar class="vconfig-status" :statusMessage="vconfigStatus"></aConfigStatusBar>
         <div class="vconfig-area">
-          <mCodeEditor
-            language="json"
-            :code.sync="currentVirtualConfig"
-          ></mCodeEditor>
+          <mCodeEditor language="json" :code.sync="currentVirtualConfig"></mCodeEditor>
         </div>
 
         <div class="vconfig-btns">
@@ -54,7 +48,7 @@ export default Vue.extend({
   components: {
     aButtonBasic,
     aConfigStatusBar,
-    mCodeEditor
+    mCodeEditor,
   },
   created() {
     this.vconfig = getFormattedJsonString(
@@ -70,27 +64,27 @@ export default Vue.extend({
       resetVConfigBtn: {
         btnLabel: "Reset Config to default",
         btnClass: "btn-config-small",
-        btnOnClick: "reset-config"
+        btnOnClick: "reset-config",
       },
       saveVConfigBtn: {
         btnLabel: "Save Config",
         btnClass: "btn-config-small",
         btnOnClick: "save-config",
-        btnActive: false
+        btnActive: false,
       },
       showHelpBtn: {
         btnLabelShow: "Show Config Format Help",
         btnLabelHide: "Hide Config Format Help",
         btnClassShow: "show-format",
         btnClassHide: "hide-format",
-        btnOnClick: "show-help"
-      }
+        btnOnClick: "show-help",
+      },
     };
   },
   computed: {
     ...mapGetters("SidebarStore", [
       "getVirtualConfig",
-      "getDefaultVirtualConfig"
+      "getDefaultVirtualConfig",
     ]),
     ...mapGetters("TdStore", ["getProtocols"]),
     id() {
@@ -116,8 +110,8 @@ export default Vue.extend({
           this.saveVConfigBtn.btnActive = false;
           this.vconfigStatus = TdVirtualConfigEnum.ERROR;
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     ...mapMutations("SidebarStore", ["saveTdVirtualConfig"]),
@@ -145,21 +139,21 @@ export default Vue.extend({
     btnSaveVirtualConfigClicked() {
       (this as any).saveTdVirtualConfig({
         id: this.id,
-        vconfig: JSON.parse(this.vconfig)
+        vconfig: JSON.parse(this.vconfig),
       });
       this.vconfigStatus = TdVirtualConfigEnum.SAVE_SUCCESS;
       this.saveVConfigBtn.btnActive = false;
       setTimeout(() => {
         this.vconfigStatus = TdVirtualConfigEnum.INFO;
       }, 1500);
-    }
+    },
   },
   watch: {
     // Check if router id changed
     "$route.params.id"(id) {
       this.vconfig = this.getSavedVirtualConfig();
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -213,15 +207,14 @@ export default Vue.extend({
 }
 
 .vconfig-title {
-  padding: 7px 0px 7px 2px;
-  max-height: 8%;
-  min-height: 50px;
+  padding: 8px 0px 8px 2px;
+  height: 48px;
   display: flex;
   align-items: center;
 }
 
 .vconfig-status {
-  height: 7%;
+  height: 36px;
 }
 
 .vconfig-header label {
@@ -229,14 +222,9 @@ export default Vue.extend({
   padding-right: 7px;
 }
 
-.statusbar-container {
-  width: 100%;
-  height: 8%;
-}
-
 .vconfig-area {
   width: 100%;
-  height: 84%;
+  height: calc(100% - 48px - 36px - 56px);
 }
 
 .vconfig-area textarea {
@@ -265,7 +253,7 @@ export default Vue.extend({
 }
 
 .vconfig-btns {
-  height: 8%;
+  height: 56px;
   padding-top: 7px;
   display: flex;
   justify-content: space-between;

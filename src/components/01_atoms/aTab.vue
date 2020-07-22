@@ -1,42 +1,42 @@
 <template>
-  <div class="tab-container" 
+  <div
+    class="tab-container"
     :class="`${tabStyle} ${tabIsActive ? 'isActive' : ''}`"
-    v-on:click.self="$emit('tab-clicked', tabId)">
-
-      <aIconButton 
-        v-if="tabIconButton && showBtn" 
-        :class="tabButtonStyle" 
-        :iconBtnSrcPath="tabIconButton.iconBtnSrcPath"
-        :iconBtnOnClick="tabIconButton.iconBtnOnClick"
-        v-on:icon-btn-clicked="$emit('tab-btn-clicked', tabIconButton.iconBtnOnClick)"
-        />
-      <aDropdownButton 
-        v-else-if="tabDropdownButton && showBtn"
-        :class="tabButtonStyle" 
-        :btnLabel="tabDropdownButton.btnLabel"
-        :btnKey="tabDropdownButton.btnKey"
-        :btnSrc="tabDropdownButton.btnSrc"
-        :btnDropdownOptions="tabDropdownButton.btnDropdownOptions"
-        />
-      <label 
-        v-if="tabTitle" 
-        :class="tabLabelStyle" 
-        v-on:click="$emit('tab-clicked', tabId)">
-          {{ tabTitle }}
-      </label>
+    v-on:click.self="$emit('tab-clicked', tabId)"
+  >
+    <aIconButton
+      v-if="tabIconButton && showBtn"
+      :class="tabButtonStyle"
+      :iconBtnSrcPath="tabIconButton.iconBtnSrcPath"
+      :iconBtnOnClick="tabIconButton.iconBtnOnClick"
+      v-on:icon-btn-clicked="$emit('tab-btn-clicked', tabIconButton.iconBtnOnClick)"
+    />
+    <aDropdownButton
+      v-else-if="tabDropdownButton && showBtn"
+      :class="tabButtonStyle"
+      :btnLabel="tabDropdownButton.btnLabel"
+      :btnKey="tabDropdownButton.btnKey"
+      :btnSrc="tabDropdownButton.btnSrc"
+      :btnDropdownOptions="tabDropdownButton.btnDropdownOptions"
+    />
+    <label
+      v-if="tabTitle"
+      :class="tabLabelStyle"
+      v-on:click="$emit('tab-clicked', tabId)"
+    >{{ tabTitle }}</label>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import aIconButton from '@/components/01_atoms/aIconButton.vue';
-import aDropdownButton from '@/components/01_atoms/aDropdownButton.vue';
+import Vue from "vue";
+import aIconButton from "@/components/01_atoms/aIconButton.vue";
+import aDropdownButton from "@/components/01_atoms/aDropdownButton.vue";
 
 export default Vue.extend({
-  name: 'aTab',
+  name: "aTab",
   components: {
     aIconButton,
-    aDropdownButton
+    aDropdownButton,
   },
   props: {
     /**
@@ -44,7 +44,7 @@ export default Vue.extend({
      */
     tabId: {
       type: String,
-      required: true
+      required: true,
     },
     /**
      * Label for tab.
@@ -52,15 +52,15 @@ export default Vue.extend({
     tabTitle: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
     /**
      * When tab needs special styling.
      */
     tabStyle: {
-        type: String,
-        required: false,
-        default: ''
+      type: String,
+      required: false,
+      default: "",
     },
     /**
      * When tab should display a icon button.
@@ -68,7 +68,7 @@ export default Vue.extend({
     tabIconButton: {
       type: Object as () => WADE.AIconButtonInterface,
       required: false,
-      default: null
+      default: null,
     },
     /**
      * When tab should display a icon button.
@@ -76,14 +76,14 @@ export default Vue.extend({
     tabDropdownButton: {
       type: Object as () => WADE.ADropdowButtonInterface,
       required: false,
-      default: null
+      default: null,
     },
     /**
      * When button should be left or right.
      */
     tabButtonStyle: {
-        type: String,
-        required: false
+      type: String,
+      required: false,
     },
     /**
      * When label needs specific styling.
@@ -91,7 +91,7 @@ export default Vue.extend({
     tabLabelStyle: {
       type: String,
       required: false,
-      default: 'tab-label'
+      default: "tab-label",
     },
     /**
      * If tab is router link.
@@ -99,7 +99,7 @@ export default Vue.extend({
     tabLink: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
     /**
      * If tab is active / should have indication to be active.
@@ -107,7 +107,7 @@ export default Vue.extend({
     tabIsActive: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     /**
      * Can be used e.g. to indicate if the icon or dropdown btn should be shown.
@@ -116,9 +116,9 @@ export default Vue.extend({
     showBtn: {
       type: Boolean,
       required: false,
-      default: true
-    }
-  }
+      default: true,
+    },
+  },
 });
 </script>
 
@@ -176,8 +176,8 @@ export default Vue.extend({
 .tab-container-in-tabbar {
   width: 15%;
   justify-content: center;
-  padding: 10px 20px 10px 20px;
-  border-right: 1px solid #393B3A;
+  padding: 0px;
+  border-right: 1px solid #393b3a;
   display: flex;
   height: 100%;
   align-items: center;
@@ -185,14 +185,14 @@ export default Vue.extend({
 
 /* Will only be applied for tabbar-tabs */
 .tab-container-in-tabbar:hover {
-  background: #939c9e;;
+  background: #939c9e;
 }
 
 .tab-button-container {
-  height: 100%;
-  width: 40%;
+  height: 36px;
+  width: 36px;
   display: flex;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 .tab-button {

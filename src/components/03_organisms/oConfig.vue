@@ -78,7 +78,7 @@ export default Vue.extend({
   components: {
     aButtonBasic,
     aConfigStatusBar,
-    mCodeEditor
+    mCodeEditor,
   },
   created() {
     this.config = getFormattedJsonString((this as any).getConfig(this.id));
@@ -92,20 +92,20 @@ export default Vue.extend({
       resetConfigBtn: {
         btnLabel: "Reset Config to default",
         btnClass: "btn-config-small",
-        btnOnClick: "reset-config"
+        btnOnClick: "reset-config",
       },
       saveConfigBtn: {
         btnLabel: "Save Config",
         btnClass: "btn-config-small",
         btnOnClick: "save-config",
-        btnActive: false
+        btnActive: false,
       },
       showHelpBtn: {
         btnLabelShow: "Show Config Format Help",
         btnLabelHide: "Hide Config Format Help",
         btnClassShow: "show-format",
         btnClassHide: "hide-format",
-        btnOnClick: "show-help"
+        btnOnClick: "show-help",
       },
       helpAreaText: `
 {
@@ -143,7 +143,7 @@ export default Vue.extend({
             "token": "token"
         }
     }
-}`
+}`,
     };
   },
   computed: {
@@ -172,8 +172,8 @@ export default Vue.extend({
           this.saveConfigBtn.btnActive = false;
           this.configStatus = TdConfigEnum.ERROR;
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     ...mapMutations("SidebarStore", ["saveTdConfig"]),
@@ -201,21 +201,21 @@ export default Vue.extend({
     btnSaveConfigClicked() {
       (this as any).saveTdConfig({
         id: this.id,
-        config: JSON.parse(this.config)
+        config: JSON.parse(this.config),
       });
       this.configStatus = TdConfigEnum.SAVE_SUCCESS;
       this.saveConfigBtn.btnActive = false;
       setTimeout(() => {
         this.configStatus = TdConfigEnum.INFO;
       }, 1500);
-    }
+    },
   },
   watch: {
     // Check if router id changed
     "$route.params.id"(id) {
       this.config = this.getSavedConfig();
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -268,38 +268,25 @@ export default Vue.extend({
   justify-content: space-between;
 }
 
-.config-title {
-  padding: 7px 0px 7px 2px;
-  max-height: 8%;
-  min-height: 50px;
-  display: flex;
-  align-items: center;
-}
-
-.config-status {
-  height: 7%;
-}
-
 .config-header label {
   font-size: 16px;
   padding-right: 7px;
 }
 
-.config-area {
-  width: 100%;
-  height: 79%;
+.config-title {
+  padding: 8px 0px 8px 2px;
+  height: 48px;
+  display: flex;
+  align-items: center;
 }
 
-.config-area textarea {
+.config-status {
+  height: 36px;
+}
+
+.config-area {
   width: 100%;
-  height: 100%;
-  resize: none;
-  padding: 7px;
-  font-family: "Courier New", Courier, monospace;
-  color: #000;
-  border: 1px solid #393b3a;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
+  height: calc(100% - 48px - 36px - 56px);
 }
 
 .config-area-form-container {
@@ -316,7 +303,7 @@ export default Vue.extend({
 }
 
 .config-btns {
-  height: 7%;
+  height: 56px;
   padding-top: 7px;
   display: flex;
   justify-content: space-between;

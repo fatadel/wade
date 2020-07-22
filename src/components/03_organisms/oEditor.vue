@@ -53,7 +53,7 @@ export default Vue.extend({
   components: {
     aButtonBasic,
     aDropdownButton,
-    mCodeEditor
+    mCodeEditor,
   },
   data() {
     return {
@@ -62,18 +62,18 @@ export default Vue.extend({
       configButton: {
         btnLabel: "Change Configuration",
         btnClass: "btn-config-big",
-        btnOnClick: "open-config-tab"
+        btnOnClick: "open-config-tab",
       },
       saveTdBtn: {
         btnLabel: "Save",
         btnClass: "btn-config-small",
-        btnOnClick: "save-td"
-      }
+        btnOnClick: "save-td",
+      },
     };
   },
   created() {
     this.$eventHub.$on("fetched-td", this.tdChanged);
-    this.$eventHub.$on("dropdown-clicked", eventObject => {
+    this.$eventHub.$on("dropdown-clicked", (eventObject) => {
       this.dropDownReaction(eventObject);
     });
     this.tdChanged({ td: (this as any).getSavedTd(this.id) });
@@ -95,8 +95,8 @@ export default Vue.extend({
       },
       async set(value: string) {
         this.tdChanged({ td: value });
-      }
-    }
+      },
+    },
   },
   methods: {
     ...mapMutations("SidebarStore", ["saveTdProtocols"]),
@@ -104,7 +104,7 @@ export default Vue.extend({
       "resetInteractions",
       "resetSelections",
       "resetResults",
-      "processChangedTd"
+      "processChangedTd",
     ]),
     // Executed when td changed: via loading saved td/ fetching td/ user changed td
     tdChanged(args: {
@@ -126,7 +126,7 @@ export default Vue.extend({
       (this as any).processChangedTd({
         td: args.td,
         config: JSON.parse((this as any).getConfig(this.id)),
-        protocols: (this as any).getProtocols(this.id)
+        protocols: (this as any).getProtocols(this.id),
       });
       // Hide url bar if td changed
       this.$emit("hide-url-bar");
@@ -139,10 +139,10 @@ export default Vue.extend({
     },
     loadTdFiles() {
       Api.showExampleTds().then(
-        fileList => {
+        (fileList) => {
           this.TdFileList = fileList as any;
         },
-        reason => {
+        (reason) => {
           loggingError(new Error("getExampleTDs failed due reason:" + reason));
         }
       );
@@ -150,12 +150,12 @@ export default Vue.extend({
     dropDownReaction(eventObject) {
       if (eventObject.btnKey === "insert-example-td") {
         Api.loadExampleTd(eventObject.btnValue).then(
-          exampleTD => {
+          (exampleTD) => {
             if (typeof exampleTD === "string") {
               this.tdChanged({ td: exampleTD });
             }
           },
-          reason => {
+          (reason) => {
             loggingError(
               new Error("load Example TDs failed due to reason:" + reason)
             );
@@ -164,13 +164,13 @@ export default Vue.extend({
       } else {
         // event not relevant for this function
       }
-    }
+    },
   },
   watch: {
     "$route.params.id"(id) {
       this.tdChanged({ td: (this as any).getSavedTd(this.id) });
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -179,12 +179,11 @@ export default Vue.extend({
   height: 100%;
 }
 .editor-title {
-  position: relative;
-  padding: 7px 0px 7px 2px;
-  max-height: 8%;
-  min-height: 50px;
+  padding: 8px 0px 8px 2px;
+  height: 48px;
   display: flex;
   align-items: center;
+  justify-items: space-between;
 }
 .editor-title label {
   font-size: 14px;
@@ -192,19 +191,10 @@ export default Vue.extend({
 }
 .editor-area {
   width: 100%;
-  height: 84%;
-  max-height: 800px;
-}
-.editor-area textarea {
-  width: 100%;
-  height: 100%;
-  resize: none;
-  padding: 7px;
-  font-family: "Courier New", Courier, monospace;
-  color: #000;
+  height: calc(100% - 48px - 56px);
 }
 .config-btns {
-  height: 8%;
+  height: 56px;
   padding-top: 7px;
   display: flex;
   justify-content: space-between;
@@ -216,8 +206,5 @@ export default Vue.extend({
 .style-aDropdownButton {
   margin-left: 10px;
   text-align: center;
-}
-.style-aDropdownButton:hover {
-  border-color: #8aaba9;
 }
 </style>

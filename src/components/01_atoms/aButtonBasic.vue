@@ -1,58 +1,63 @@
 <!-- Basic button with label -->
 <template>
-  <button class="btn btn-basic" :class="btnClass" @click="onClick" :disabled="!btnActive">{{ btnLabel }}</button>
+  <button
+    class="btn btn-basic"
+    :class="btnClass"
+    @click="onClick"
+    :disabled="!btnActive"
+  >{{ btnLabel }}</button>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 export default Vue.extend({
-    name: 'aButtonBasic',
-    props: {
-        /**
-         * Displayed label on button.
-         */
-        btnLabel: {
-          type: String,
-          required: true
-        },
-        /**
-         * Button class. Can either be 'btn-grey' or 'btn-pos' or any other custom style.
-         */
-        btnClass: {
-          type: String,
-          required: true
-        },
-        /**
-         * Triggered event when button is clicked. Eg.: 'btn-open-tab-clicked'
-         */
-        btnOnClick: {
-          type: String,
-          required: true
-        },
-        /**
-         * Inidicates wether button is enabled or disabled.
-         */
-        btnActive: {
-          type: Boolean,
-          required: false,
-          default: true
-        }
+  name: "aButtonBasic",
+  props: {
+    /**
+     * Displayed label on button.
+     */
+    btnLabel: {
+      type: String,
+      required: true,
     },
-    methods: {
-        onClick() {
-            if (this.btnOnClick) {
-                this.$emit(this.btnOnClick);
-                this.$eventHub.$emit(this.btnOnClick);
-            }
-        }
-    }
+    /**
+     * Button class. Can either be 'btn-grey' or 'btn-pos' or any other custom style.
+     */
+    btnClass: {
+      type: String,
+      required: true,
+    },
+    /**
+     * Triggered event when button is clicked. Eg.: 'btn-open-tab-clicked'
+     */
+    btnOnClick: {
+      type: String,
+      required: true,
+    },
+    /**
+     * Inidicates wether button is enabled or disabled.
+     */
+    btnActive: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  methods: {
+    onClick() {
+      if (this.btnOnClick) {
+        this.$emit(this.btnOnClick);
+        this.$eventHub.$emit(this.btnOnClick);
+      }
+    },
+  },
 });
 </script>
 
 <style scoped>
 button:disabled {
-  background-color: #939C9E;
-  color: #B4BAB9;
+  background-color: #939c9e;
+  color: #b4bab9;
 }
 
 .btn-basic {
@@ -80,7 +85,7 @@ button:disabled {
 
 .btn-results {
   background: none;
-  border: 1px solid #393B3A;
+  border: 1px solid #393b3a;
 }
 
 .btn-url-bar {
@@ -106,7 +111,8 @@ button:disabled {
 }
 
 /* Unique style for config show hide format btn */
-.hide-format, .show-format {
+.hide-format,
+.show-format {
   font-size: 14px;
   margin: 7px 0 7px 7px;
   padding: 7px;
@@ -118,7 +124,8 @@ button:disabled {
 }
 
 /* Unique style for unsubscribe btn */
-.unsubscribe-btn, .unsubscribed-btn {
+.unsubscribe-btn,
+.unsubscribed-btn {
   font-size: 14px;
   border: 1px solid #b5dfdd;
   margin: 0;
@@ -129,8 +136,8 @@ button:disabled {
 }
 
 .unsubscribed-btn {
-  background: #305E5C !important;
-  border: 1px solid #305E5C;
+  background: #305e5c !important;
+  border: 1px solid #305e5c;
 }
 
 .unsubscribed-btn:hover {
@@ -138,7 +145,8 @@ button:disabled {
 }
 
 .unsubscribe-btn:hover {
-  border-color: #8aaba9;
+  background-color: #305e5c;
+  cursor: pointer;
 }
 </style>
 

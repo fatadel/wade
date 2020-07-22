@@ -8,12 +8,7 @@
       <label v-if="btnLabel" class="button-label">{{ btnLabel }}</label>
     </div>
 
-    <img
-      class="button-icon"
-      v-if="btnSrc"
-      v-bind:src="iconSrc"
-      :class="btnIconStyle"
-    />
+    <img class="button-icon" v-if="btnSrc" v-bind:src="iconSrc" :class="btnIconStyle" />
 
     <i v-else-if="btnFaIcon" class="fa button-icon" :class="btnFaIcon"></i>
 
@@ -30,11 +25,7 @@
           v-if="dropdownElement.icon"
           :src="iconDropdownSrc(dropdownElement.icon)"
         />
-        <input
-          v-if="dropdownElement.editable"
-          type="text"
-          :placeholder="dropdownElement.title"
-        />
+        <input v-if="dropdownElement.editable" type="text" :placeholder="dropdownElement.title" />
         <label v-else>{{ dropdownElement.title }}</label>
       </div>
     </div>
@@ -52,21 +43,21 @@ export default Vue.extend({
     btnLabel: {
       type: String,
       required: false,
-      default: ""
+      default: "",
     },
     /**
      * Font awesome Icon to be displayed.
      */
     btnFaIcon: {
       type: String,
-      required: false
+      required: false,
     },
     /**
      * Title of the button
      */
     btnTitle: {
       type: String,
-      required: false
+      required: false,
     },
     /**
      * The key should explain the main purpose of the button.
@@ -75,47 +66,47 @@ export default Vue.extend({
      */
     btnKey: {
       type: String,
-      required: true
+      required: true,
     },
     /**
      * Source path for the button's icon.
      */
     btnSrc: {
       type: String,
-      required: false
+      required: false,
     },
     /**
      * A list of all options for the dropdown.
      */
     btnDropdownOptions: {
       type: Array as () => WADE.DropdownOptionInterface[],
-      required: true
+      required: true,
     },
     /**
      * Unique styling for the dropdown container.
      */
     btnStyle: {
       type: String,
-      required: false
+      required: false,
     },
     /**
      * Unique styling for the icon.
      */
     btnIconStyle: {
       type: String,
-      required: false
-    }
+      required: false,
+    },
   },
   data() {
     return {
       showDropdown: false,
-      key: ""
+      key: "",
     };
   },
   computed: {
     iconSrc(): any {
       return require(`@/assets/${this.btnSrc}.png`);
-    }
+    },
   },
   methods: {
     getBtnKey() {
@@ -129,21 +120,21 @@ export default Vue.extend({
         btnKey: this.btnKey,
         btnValue: dropdownElement.key,
         btnInput: dropdownElement.inputValue,
-        parentId: null
+        parentId: null,
       });
       this.$eventHub.$emit("dropdown-clicked", {
         btnKey: this.btnKey,
         btnValue: dropdownElement.key,
         btnInput: dropdownElement.inputValue,
-        parentId: null
+        parentId: null,
       });
-    }
+    },
   },
   watch: {
     showDropdown() {
       this.$emit(`${this.btnKey}`, this.showDropdown);
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -154,6 +145,11 @@ export default Vue.extend({
   border-radius: 3px;
   position: relative;
   height: 100%;
+}
+
+.dropdown-btn-container:hover {
+  background-color: #305e5c;
+  cursor: pointer;
 }
 
 .button-icon {
@@ -219,6 +215,11 @@ export default Vue.extend({
   width: 100%;
   height: 30px;
   align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-element:hover {
+  cursor: pointer;
 }
 
 .dropdown-element-img {
@@ -230,16 +231,12 @@ export default Vue.extend({
 .button-label-container {
   background: #b5dfdd;
   width: 100%;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
+  padding: 2px;
   border: none;
-}
-
-.button-label-container:hover {
-  color: white;
-  background-color: #8aaba9;
 }
 
 .button-label {
@@ -278,6 +275,5 @@ export default Vue.extend({
 }
 
 .dropdown-custom-editor div:hover {
-  background-color: #8aaba9;
 }
 </style>
