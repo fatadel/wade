@@ -32,6 +32,10 @@ export default Vue.extend({
       required: false,
       default: "",
     },
+    options: {
+      type: Object,
+      required: false,
+    },
   },
   data() {
     return {
@@ -44,9 +48,8 @@ export default Vue.extend({
     };
   },
   watch: {
-    value(newVal) {
-      console.log(newVal);
-      this.value = newVal;
+    code(newVal) {
+      this.value = newVal; // handles prop changes (from outside)
     },
   },
 });
@@ -57,5 +60,8 @@ export default Vue.extend({
 .style-mCodeEditor .monaco-editor {
   width: 100%;
   height: 100%;
+  /* makes editor responsive */
+  resize: vertical;
+  overflow: auto;
 }
 </style>
