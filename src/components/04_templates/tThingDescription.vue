@@ -2,29 +2,6 @@
   <div class="td-page-container">
     <mTabbar :tabbarElements="getTdTabbar" v-on:tab-clicked="tabClicked" />
 
-    <!-- Tab Config -->
-    <div
-      v-if="currentTabId === 'config'"
-      :class="getSidebarActive ? 'td-config border-top' : 'td-config full-screen border-top'"
-    >
-      <oConfig class="td-config-child-el" />
-      <!-- <oProtocolSelection class="td-config-child-el" /> -->
-    </div>
-    <!-- Tab Virtual Thing -->
-    <div
-      v-if="currentTabId === 'virtual'"
-      :class="getSidebarActive ? 'td-virtual border-top' : 'td-virtual border-top full-screen'"
-    >
-      <oVirtual />
-      <oVirtualThing />
-    </div>
-    <!-- Tab Performance -->
-    <div
-      v-if="currentTabId === 'performance'"
-      :class="getSidebarActive ? 'td-performance border-top' : 'td-performance border-top full-screen'"
-    >
-      <tPerformance />
-    </div>
     <!-- Tab Editor & Selection & Results (default tab) -->
     <div
       v-if="currentTabId === 'editor'"
@@ -54,7 +31,37 @@
         </div>
       </div>
     </div>
-    <div v-if="currentTabId === 'virtual'" class="td-virtual">
+
+    <!-- Tab Config -->
+    <div
+      v-if="currentTabId === 'config'"
+      :class="getSidebarActive ? 'td-config border-top' : 'td-config full-screen border-top'"
+    >
+      <oConfig class="td-config-child-el" />
+      <!-- <oProtocolSelection class="td-config-child-el" /> -->
+    </div>
+
+    <!-- Tab Deployment -->
+    <div
+      v-if="currentTabId === 'deployment'"
+      :class="getSidebarActive ? 'td-deployment border-top' : 'td-deployment border-top full-screen'"
+    >
+      <tDeployment />
+    </div>
+
+    <!-- Tab Performance -->
+    <div
+      v-if="currentTabId === 'performance'"
+      :class="getSidebarActive ? 'td-performance border-top' : 'td-performance border-top full-screen'"
+    >
+      <tPerformance />
+    </div>
+
+    <!-- Tab Virtual Thing -->
+    <div
+      v-if="currentTabId === 'virtual'"
+      :class="getSidebarActive ? 'td-virtual border-top' : 'td-virtual border-top full-screen'"
+    >
       <oVirtual />
       <oVirtualThing />
     </div>
@@ -64,6 +71,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import { ref } from "@vue/composition-api";
 import aStatusbar from "@/components/01_atoms/aStatusbar.vue";
 import mTabbar from "@/components/02_molecules/mTabbar.vue";
 import mUrlBar from "@/components/02_molecules/mUrlBar.vue";
@@ -92,7 +100,7 @@ export default Vue.extend({
     oResults,
     mTabbar,
     mUrlBar,
-    tPerformance
+    tPerformance,
   },
   created() {
     this.changeActiveTab();
@@ -111,7 +119,7 @@ export default Vue.extend({
       fetchButton: {
         btnLabel: "Fetch Td",
         btnClass: "btn-url-bar",
-        btnOnClick: "btn-clicked"
+        btnOnClick: "btn-clicked",
       },
       async fetchFunction(url: string) {
         // TODO: Error Handling connection time out
@@ -119,30 +127,30 @@ export default Vue.extend({
         let errorMsg: null | string = null;
         let tdState: null | TdStateEnum = null;
         const fetchedTd = await fetch(url)
-          .then(response => {
+          .then((response) => {
             return response.json();
           })
-          .then(myJson => {
+          .then((myJson) => {
             td = JSON.stringify(myJson);
             tdState = TdStateEnum.VALID_TD_FETCHED;
             return {
               td,
               tdState,
-              errorMsg
+              errorMsg,
             };
           })
-          .catch(err => {
+          .catch((err) => {
             errorMsg = err;
             tdState = TdStateEnum.INVALID_TD_FETCHED;
             td = null;
             return {
               td,
               tdState,
-              errorMsg
+              errorMsg,
             };
           });
         (this as any).$eventHub.$emit("fetched-td", fetchedTd);
-      }
+      },
     };
   },
   computed: {
@@ -150,7 +158,7 @@ export default Vue.extend({
     ...mapGetters("SidebarStore", ["getSidebarActive"]),
     id() {
       return (this as any).$route.params.id;
-    }
+    },
   },
   methods: {
     ...mapMutations("TdStore", ["setActiveTab"]),
@@ -170,9 +178,9 @@ export default Vue.extend({
     changeActiveTab(): void {
       (this as any).setActiveTab({
         tabbarKey: "tdTabs",
-        activeTab: this.currentTabId
+        activeTab: this.currentTabId,
       });
-    }
+    },
   },
   watch: {
     // Check if router id changed and change active sidebar element
@@ -184,8 +192,8 @@ export default Vue.extend({
     // Change active tab if tab id changed
     currentTabId() {
       this.changeActiveTab();
-    }
-  }
+    },
+  },
 });
 </script>
 

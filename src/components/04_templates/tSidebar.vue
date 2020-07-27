@@ -1,10 +1,10 @@
 <template>
-  <div 
+  <div
     :class="getSidebarStyle"
     @mouseover="showCollapseBtn = true"
     @mouseleave="showCollapseBtn = false"
   >
-    <aTabHeader 
+    <aTabHeader
       class="sidebar-header"
       :class="getHeaderStyle"
       :isSidebarVisible="isSidebarVisible"
@@ -17,7 +17,7 @@
     <div :class="isSidebarVisible ? 'sidebar-content' : 'sidebar-content invisible'">
       <div class="add-element-container">
         <!-- <aSearchbar class="searchbar" /> -->
-        <label> Add Element </label>
+        <label>Add Element</label>
         <aDropdownButton
           class="dropdown-btn"
           :btnKey="getAddNewButton.btnKey"
@@ -37,59 +37,143 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
-import { mapGetters, mapMutations } from 'vuex';
-import aTabHeader from '@/components/01_atoms/aTabHeader.vue';
-import aSearchbar from '@/components/01_atoms/aSearchbar.vue';
-import aDropdownButton from '@/components/01_atoms/aDropdownButton.vue';
-import mSidebarElementGroup from '@/components/02_molecules/mSidebarElementGroup.vue';
+import Vue from "vue";
+import { mapGetters, mapMutations } from "vuex";
+import aTabHeader from "@/components/01_atoms/aTabHeader.vue";
+import aSearchbar from "@/components/01_atoms/aSearchbar.vue";
+import aDropdownButton from "@/components/01_atoms/aDropdownButton.vue";
+import mSidebarElementGroup from "@/components/02_molecules/mSidebarElementGroup.vue";
 
 export default Vue.extend({
-  name: 'tSidebar',
+  name: "tSidebar",
   components: {
     aTabHeader,
     aSearchbar,
     aDropdownButton,
-    mSidebarElementGroup
+    mSidebarElementGroup,
   },
   data() {
     return {
       showCollapseBtn: false,
-      isSidebarVisible: true
+      isSidebarVisible: true,
     };
   },
   computed: {
-    ...mapGetters('SidebarStore', [
-      'getHeaderTab',
-      'getAddNewButton',
-      'getSidebarElements',
-      'getSidebarActive'
+    ...mapGetters("SidebarStore", [
+      "getHeaderTab",
+      "getAddNewButton",
+      "getSidebarElements",
+      "getSidebarActive",
     ]),
     getSidebarStyle() {
-      console.log('route ', (this as any).$route.params.id);
-      return (this as any).$route.params.id === undefined && !(this as any).getSidebarActive ? 'sidebar full-width' : (this as any).getSidebarActive ? 'sidebar sidebar-visible' : 'sidebar';
+      console.log("route ", (this as any).$route.params.id);
+      return (this as any).$route.params.id === undefined &&
+        !(this as any).getSidebarActive
+        ? "sidebar full-width"
+        : (this as any).getSidebarActive
+        ? "sidebar sidebar-visible"
+        : "sidebar";
     },
     getHeaderStyle() {
-      return (this as any).$route.params.id === undefined && !(this as any).getSidebarActive ? '' : (this as any).getSidebarActive ? '' : 'border-right';
-    }
+      return (this as any).$route.params.id === undefined &&
+        !(this as any).getSidebarActive
+        ? ""
+        : (this as any).getSidebarActive
+        ? ""
+        : "border-right";
+    },
   },
   methods: {
-    ...mapMutations('SidebarStore', ['setSidebarActiveStatus']),
+    ...mapMutations("SidebarStore", ["setSidebarActiveStatus"]),
     homeClicked() {
-      this.$emit('home-clicked');
+      this.$emit("home-clicked");
     },
     toggleSidebar() {
-      console.log('HEyho');
       this.isSidebarVisible = !this.isSidebarVisible;
       (this as any).setSidebarActiveStatus(this.isSidebarVisible);
     },
     sidebarElementClicked(elementId: string, elementType: string) {
-      this.$emit('sidebar-element-clicked', elementId, elementType);
+      this.$emit("sidebar-element-clicked", elementId, elementType);
     },
     openModuleAddElement(element: any) {
-      this.$emit('open-module-element', element);
-    }
-  }
+      this.$emit("open-module-element", element);
+    },
+  },
+  mounted() {
+    this.$store.commit("TdStore/setTabs", [
+      {
+        tabId: "editor",
+        tabTitle: "Editor",
+        tabStyle: "tab-container-in-tabbar",
+        tabDropdownButton: {
+          btnKey: "td-editor-upload",
+          btnSrc: "upload",
+          btnDropdownOptions: [
+            {
+              title: "Load from url",
+              key: "td-url",
+              icon: "url",
+            },
+          ],
+        },
+        tabButtonStyle: "tab-btn-right tab-button-container",
+        tabLink: "/editor",
+        tabIsActive: false,
+      },
+      {
+        tabId: "config",
+        tabTitle: "Config",
+        tabStyle: "tab-container-in-tabbar",
+        tabLink: "/config",
+        tabIsActive: false,
+      },
+      {
+        tabId: "deployment",
+        tabTitle: "Deployment",
+        tabStyle: "tab-container-in-tabbar",
+        tabLink: "/deployment",
+        tabIsActive: false,
+      },
+      {
+        tabId: "performance",
+        tabTitle: "Performance",
+        tabStyle: "tab-container-in-tabbar",
+        tabLink: "/performance",
+        tabIsActive: false,
+      },
+      {
+        tabId: "virtual",
+        tabTitle: "Virtual Thing",
+        tabStyle: "tab-container-in-tabbar",
+        tabLink: "/virtual",
+        tabIsActive: false,
+      },
+    ]);
+
+    this.$store.commit("MashupStore/setTabs", [
+      {
+        tabId: "editor",
+        tabTitle: "Editor",
+        tabStyle: "tab-container-in-tabbar",
+        tabLink: "/editor",
+        tabIsActive: false,
+      },
+      {
+        tabId: "deployment",
+        tabTitle: "Deployment",
+        tabStyle: "tab-container-in-tabbar",
+        tabLink: "/deployment",
+        tabIsActive: false,
+      },
+      {
+        tabId: "performance",
+        tabTitle: "Performance",
+        tabStyle: "tab-container-in-tabbar",
+        tabLink: "/performance",
+        tabIsActive: false,
+      },
+    ]);
+  },
 });
 </script>
 

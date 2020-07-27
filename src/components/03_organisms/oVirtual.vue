@@ -179,7 +179,7 @@ export default Vue.extend({
 .show-vconfig,
 .help-area {
   width: 100%;
-  height: calc(100% - 50px);
+  height: 100%;
 }
 
 .change-vconfig-area {
@@ -206,6 +206,11 @@ export default Vue.extend({
   justify-content: space-between;
 }
 
+.vconfig-header label {
+  font-size: 16px;
+  padding-right: 7px;
+}
+
 .vconfig-title {
   padding: 8px 0px 8px 2px;
   height: 48px;
@@ -217,26 +222,9 @@ export default Vue.extend({
   height: 36px;
 }
 
-.vconfig-header label {
-  font-size: 16px;
-  padding-right: 7px;
-}
-
 .vconfig-area {
   width: 100%;
   height: calc(100% - 48px - 36px - 56px);
-}
-
-.vconfig-area textarea {
-  width: 100%;
-  height: 100%;
-  resize: none;
-  padding: 7px;
-  font-family: "Courier New", Courier, monospace;
-  color: #000;
-  border: 1px solid #393b3a;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
 }
 
 .vconfig-area-form-container {
